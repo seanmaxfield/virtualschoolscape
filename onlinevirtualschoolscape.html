@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+canvas {
+    border:1px solid #d3d3d3;
+    background-image: url("http://triplethreat.design/wp-content/uploads/2019/06/VCTile.jpg");
+}
+</style>
+</head>
+<body onload="startGame()">
+<div>
+<div style="float: left;">
+    <script>
+    var customerName = prompt("Please enter your password");
+    while (customerName!= "password") { 
+    	for (i=0;i<5;i++){
+    		var customerName = prompt("Please enter your password");
+    	}
+    }
+
+    var myGamePiece;
+    var myObstacle;
+    var myObstacle8;
+    var myObstacle4;
+    var myObstacle12;
+    var myObstacle16;
+    var myObstacle24;
+    var myObstacle25;
+    var myObstacle26;
+    var myObstacle27;
+    var myObstacle28;
+    var myObstacle29;
+    var myObstacle30;
+
+    function startGame() {
+        myGamePiece = new component(30, 30, "standstill.png", 250, 100, "image");
+        myObstacle  = new component(10, 200, "black", 300, 120);
+        myObstacle1  = new component(200, 10, "black", 300, 120); 
+        myObstacle2  = new component(400, 10, "black", 300, 320);
+        myObstacle3  = new component(10, 200, "black", 690, 120);
+        myObstacle4  = new component(100, 100, "classtable.png", 450, 170, "image");
+
+        myObstacle5  = new component(200, 10, "black", 700, 120);
+        myObstacle6  = new component(400, 10, "black", 700, 320); 
+        myObstacle7  = new component(10, 200, "black", 1090, 120);
+        myObstacle8  = new component(100, 100, "classtable2.png", 850, 170, "image");
+
+        myObstaclew  = new component(10, 200, "black", 300, 420);
+        myObstacle9  = new component(200, 10, "black", 300, 420);
+        myObstacle10  = new component(400, 10, "black", 300, 620); 
+        myObstacle11  = new component(10, 200, "black", 690, 420);
+        myObstacle12  = new component(100, 100, "classtable3.png", 450, 470, "image");
+
+        myObstacle13  = new component(200, 10, "black", 700, 420);
+        myObstacle14  = new component(400, 10, "black", 700, 620); 
+        myObstacle15  = new component(10, 200, "black", 1090, 420);
+        myObstacle16  = new component(100, 100, "classtable4.png", 850, 470, "image");
+
+        myObstacle17  = new component(10, 200, "black", 1090, 0);
+        myObstacle18  = new component(10, 200, "black", 1090, 320);
+        myObstacle19  = new component(10, 500, "black", 150, 120);
+        myObstacle20  = new component(10, 20, "black", 150, 0);
+        myObstacle21  = new component(150, 10, "black", 150, 620);
+        myObstacle22  = new component(300, 10, "black", 150, 920);
+        myObstacle23  = new component(10, 310, "black", 450, 620);
+        myObstacle24  = new component(100, 50, "black", 260, 760);
+        myObstacle25  = new component(10, 10, "orange", 480, 760);
+        myObstacle26  = new component(10, 10, "orange", 550, 760);
+        myObstacle27  = new component(10, 10, "orange", 480, 870);
+        myObstacle28  = new component(10, 10, "orange", 50, 50);
+        myObstacle29  = new component(10, 10, "orange", 50, 400);
+        myObstacle30  = new component(10, 10, "orange", 400, 50);
+        myGameArea.start();
+    }
+
+    var myGameArea = {
+        canvas : document.createElement("canvas"),
+        start : function() {
+            this.canvas.width = 1200;
+            this.canvas.height = 950;
+            this.context = this.canvas.getContext("2d");
+            document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+            this.interval = setInterval(updateGameArea, 20);
+            this.interval = setInterval(updateGameArea2, 20);
+            this.interval = setInterval(updateGameArea3, 20);
+            this.interval = setInterval(updateGameArea4, 20);
+            this.interval = setInterval(updateGameArea5, 20);
+            this.interval = setInterval(updateGameArea6, 20);
+            window.addEventListener('keydown', function (e) {
+                myGameArea.keys = (myGameArea.keys || []);
+                myGameArea.keys[e.keyCode] = (e.type == "keydown");
+            })
+            window.addEventListener('keyup', function (e) {
+                myGameArea.keys[e.keyCode] = (e.type == "keydown");            
+            })
+        },
+        clear : function() {
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+    }
+    function component(width, height, color, x, y, type) {
+        this.type = type;
+        if (type == "image") {
+            this.image = new Image();
+            this.image.src = color;
+        }
+        this.width = width;
+        this.height = height;
+        this.speedX = 0;
+        this.speedY = 0;    
+        this.x = x;
+        this.y = y;    
+        this.update = function() {
+            ctx = myGameArea.context;
+            if (type == "image") {
+                ctx.drawImage(this.image, 
+                    this.x, 
+                    this.y,
+                    this.width, this.height);
+            } else {
+                ctx.fillStyle = color;
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
+        this.newPos = function() {
+            this.x += this.speedX;
+            this.y += this.speedY;        
+        } 
+        this.crashWith = function(otherobj) {
+            var myleft = this.x;
+            var myright = this.x + (this.width);
+            var mytop = this.y;
+            var mybottom = this.y + (this.height);
+            var otherleft = otherobj.x;
+            var otherright = otherobj.x + (otherobj.width);
+            var othertop = otherobj.y;
+            var otherbottom = otherobj.y + (otherobj.height);
+            var crash = true;
+            if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
+                crash = false;
+            }
+            return crash;
+        }
+        this.crashWith2 = function(otherobj) {
+            var myleft = this.x;
+            var myright = this.x + (this.width);
+            var mytop = this.y;
+            var mybottom = this.y + (this.height);
+            var otherleft = otherobj.x;
+            var otherright = otherobj.x + (otherobj.width);
+            var othertop = otherobj.y;
+            var otherbottom = otherobj.y + (otherobj.height);
+            var crash = true;
+            if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
+                crash = false;
+            }
+            return crash;
+        }      
+    }
+
+    function updateGameArea() {
+        if (myGamePiece.crashWith(myObstacle4)) {
+        window.location = "THIS SHOULD BE A ZOOM (OR OTHER) EXTERNAL LINK";
+        } else {
+            myGameArea.clear();
+            myGamePiece.speedX = 0;
+            myGamePiece.speedY = 0;
+            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -1; }
+            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 1; }
+            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -1;}
+            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 1;}
+            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[32]) {myGamePiece.image.src = "standstill.png";}
+            if (myGameArea.keys && myGameArea.keys[70]) {myGamePiece.image.src = "randomIcon.png";}
+            myGamePiece.newPos();    
+            myGamePiece.update();
+            myObstacle.update();
+            myObstacle1.update();
+            myObstacle2.update();
+            myObstacle3.update();
+            myObstacle4.update();
+            myObstacle5.update();
+            myObstacle6.update();
+            myObstacle7.update();
+            myObstacle8.update();
+            myObstacle9.update();
+            myObstacle10.update();
+            myObstacle11.update();
+            myObstacle12.update();
+            myObstacle13.update();
+            myObstacle14.update();
+            myObstacle15.update();
+            myObstacle16.update();
+            myObstacle17.update();
+            myObstacle18.update();
+            myObstacle19.update();
+            myObstacle20.update();
+            myObstacle21.update();
+            myObstacle22.update();
+            myObstacle23.update();
+            myObstacle24.update();
+            myObstacle25.update();
+            myObstacle26.update();
+            myObstacle27.update();
+            myObstacle28.update();
+            myObstacle29.update();
+            myObstacle30.update();
+            myObstaclew.update();
+            myBackground.update();
+        }
+    }
+    function updateGameArea2() {
+        if (myGamePiece.crashWith(myObstacle8)) {
+        window.location = "THIS SHOULD BE A ZOOM (OR OTHER) EXTERNAL LINK";
+      } else {
+            myGameArea.clear();
+            myGamePiece.speedX = 0;
+            myGamePiece.speedY = 0;
+            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -1; }
+            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 1; }
+            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -1;}
+            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 1;}
+            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[32]) {myGamePiece.image.src = "standstill.png";}
+            if (myGameArea.keys && myGameArea.keys[70]) {myGamePiece.image.src = "randomIcon.png";}
+            myGamePiece.newPos();    
+            myGamePiece.update();
+            myObstacle.update();
+            myObstacle1.update();
+            myObstacle2.update();
+            myObstacle3.update();
+            myObstacle4.update();
+            myObstacle5.update();
+            myObstacle6.update();
+            myObstacle7.update();
+            myObstacle8.update();
+            myObstacle9.update();
+            myObstacle10.update();
+            myObstacle11.update();
+            myObstacle12.update();
+            myObstacle13.update();
+            myObstacle14.update();
+            myObstacle15.update();
+            myObstacle16.update();
+            myObstacle17.update();
+            myObstacle18.update();
+            myObstacle19.update();
+            myObstacle20.update();
+            myObstacle21.update();
+            myObstacle22.update();
+            myObstacle23.update();
+            myObstacle24.update();
+            myObstacle25.update();
+            myObstacle26.update();
+            myObstacle27.update();
+            myObstacle28.update();
+            myObstacle29.update();
+            myObstacle30.update();
+            myObstaclew.update();
+            myBackground.update();
+        }
+    }
+    function updateGameArea3() {
+        if (myGamePiece.crashWith(myObstacle12)) {
+        window.location = "THIS SHOULD BE A ZOOM (OR OTHER) EXTERNAL LINK";
+      } else {
+            myGameArea.clear();
+            myGamePiece.speedX = 0;
+            myGamePiece.speedY = 0;
+            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -1; }
+            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 1; }
+            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -1;}
+            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 1;}
+            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[32]) {myGamePiece.image.src = "standstill.png";}
+            if (myGameArea.keys && myGameArea.keys[70]) {myGamePiece.image.src = "randomIcon.png";}
+            myGamePiece.newPos();    
+            myGamePiece.update();
+            myObstacle.update();
+            myObstacle1.update();
+            myObstacle2.update();
+            myObstacle3.update();
+            myObstacle4.update();
+            myObstacle5.update();
+            myObstacle6.update();
+            myObstacle7.update();
+            myObstacle8.update();
+            myObstacle9.update();
+            myObstacle10.update();
+            myObstacle11.update();
+            myObstacle12.update();
+            myObstacle13.update();
+            myObstacle14.update();
+            myObstacle15.update();
+            myObstacle16.update();
+            myObstacle17.update();
+            myObstacle18.update();
+            myObstacle19.update();
+            myObstacle20.update();
+            myObstacle21.update();
+            myObstacle22.update();
+            myObstacle23.update();
+            myObstacle24.update();
+            myObstacle25.update();
+            myObstacle26.update();
+            myObstacle27.update();
+            myObstacle28.update();
+            myObstacle29.update();
+            myObstacle30.update();
+            myObstaclew.update();
+            myBackground.update();
+        }
+    }
+    function updateGameArea4() {
+        if (myGamePiece.crashWith(myObstacle16)) {
+        window.location = "THIS SHOULD BE A ZOOM (OR OTHER) EXTERNAL LINK";
+      } else {
+            myGameArea.clear();
+            myGamePiece.speedX = 0;
+            myGamePiece.speedY = 0;
+            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -1; }
+            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 1; }
+            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -1;}
+            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 1;}
+            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[32]) {myGamePiece.image.src = "standstill.png";}
+            if (myGameArea.keys && myGameArea.keys[70]) {myGamePiece.image.src = "randomIcon.png";}
+            myGamePiece.newPos();    
+            myGamePiece.update();
+            myObstacle.update();
+            myObstacle1.update();
+            myObstacle2.update();
+            myObstacle3.update();
+            myObstacle4.update();
+            myObstacle5.update();
+            myObstacle6.update();
+            myObstacle7.update();
+            myObstacle8.update();
+            myObstacle9.update();
+            myObstacle10.update();
+            myObstacle11.update();
+            myObstacle12.update();
+            myObstacle13.update();
+            myObstacle14.update();
+            myObstacle15.update();
+            myObstacle16.update();
+            myObstacle17.update();
+            myObstacle18.update();
+            myObstacle19.update();
+            myObstacle20.update();
+            myObstacle21.update();
+            myObstacle22.update();
+            myObstacle23.update();
+            myObstacle24.update();
+            myObstacle25.update();
+            myObstacle26.update();
+            myObstacle27.update();
+            myObstacle28.update();
+            myObstacle29.update();
+            myObstacle30.update();
+            myObstaclew.update();
+            myBackground.update();
+        }
+    }
+        function updateGameArea5() {
+        if (myGamePiece.crashWith(myObstacle24)) {
+        window.location = "THIS SHOULD BE A ZOOM (OR OTHER) EXTERNAL LINK";
+      } else {
+            myGameArea.clear();
+            myGamePiece.speedX = 0;
+            myGamePiece.speedY = 0;
+            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -1; }
+            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 1; }
+            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -1;}
+            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 1;}
+            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[32]) {myGamePiece.image.src = "standstill.png";}
+            if (myGameArea.keys && myGameArea.keys[70]) {myGamePiece.image.src = "randomIcon.png";}
+            myGamePiece.newPos();    
+            myGamePiece.update();
+            myObstacle.update();
+            myObstacle1.update();
+            myObstacle2.update();
+            myObstacle3.update();
+            myObstacle4.update();
+            myObstacle5.update();
+            myObstacle6.update();
+            myObstacle7.update();
+            myObstacle8.update();
+            myObstacle9.update();
+            myObstacle10.update();
+            myObstacle11.update();
+            myObstacle12.update();
+            myObstacle13.update();
+            myObstacle14.update();
+            myObstacle15.update();
+            myObstacle16.update();
+            myObstacle17.update();
+            myObstacle18.update();
+            myObstacle19.update();
+            myObstacle20.update();
+            myObstacle21.update();
+            myObstacle22.update();
+            myObstacle23.update();
+            myObstacle24.update();
+            myObstacle25.update();
+            myObstacle26.update();
+            myObstacle27.update();
+            myObstacle28.update();
+            myObstacle29.update();
+            myObstacle30.update();
+            myObstaclew.update();
+            myBackground.update();
+        }
+    }
+    spcount = 0
+    function updateGameArea6() {
+        if (myGamePiece.crashWith(myObstacle25)) {
+            myObstacle25  = new component(10, 10, "orange", (Math.floor(Math.random() * 1201)), (Math.floor(Math.random() * 1201)));
+            spcount=spcount+1
+            document.getElementById("spcount").innerHTML=spcount;
+            return spcount
+            return myObstacle25
+        } else if (myGamePiece.crashWith(myObstacle26)){myObstacle26  = new component(10, 10, "orange", (Math.floor(Math.random() * 1201)), (Math.floor(Math.random() * 1201)));
+            spcount=spcount+1
+            document.getElementById("spcount").innerHTML=spcount;
+            return spcount
+        } else if (myGamePiece.crashWith(myObstacle27)){myObstacle27  = new component(10, 10, "orange", (Math.floor(Math.random() * 1201)), (Math.floor(Math.random() * 1201)));
+            spcount=spcount+1
+            document.getElementById("spcount").innerHTML=spcount;
+            return spcount
+        } else if (myGamePiece.crashWith(myObstacle28)){myObstacle28  = new component(10, 10, "orange", (Math.floor(Math.random() * 1201)), (Math.floor(Math.random() * 1201)));
+            spcount=spcount+1
+            document.getElementById("spcount").innerHTML=spcount;
+            return spcount
+        } else if (myGamePiece.crashWith(myObstacle29)){myObstacle29  = new component(10, 10, "orange", (Math.floor(Math.random() * 1201)), (Math.floor(Math.random() * 1201)));
+            spcount=spcount+1
+            document.getElementById("spcount").innerHTML=spcount;
+            return spcount
+        } else if (myGamePiece.crashWith(myObstacle30)){myObstacle30  = new component(10, 10, "orange", (Math.floor(Math.random() * 1201)), (Math.floor(Math.random() * 1201)));
+            spcount=spcount+1
+            document.getElementById("spcount").innerHTML=spcount;
+            return spcount
+        }
+        else {
+            myGameArea.clear();
+            myGamePiece.speedX = 0;
+            myGamePiece.speedY = 0;
+            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -1; }
+            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 1; }
+            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -1;}
+            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 1;}
+            if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.image.src = "walking.png";}
+            if (myGameArea.keys && myGameArea.keys[32]) {myGamePiece.image.src = "standstill.png";}
+            if (myGameArea.keys && myGameArea.keys[70]) {myGamePiece.image.src = "randomIcon.png";}
+            myGamePiece.newPos();    
+            myGamePiece.update();
+            myObstacle.update();
+            myObstacle1.update();
+            myObstacle2.update();
+            myObstacle3.update();
+            myObstacle4.update();
+            myObstacle5.update();
+            myObstacle6.update();
+            myObstacle7.update();
+            myObstacle8.update();
+            myObstacle9.update();
+            myObstacle10.update();
+            myObstacle11.update();
+            myObstacle12.update();
+            myObstacle13.update();
+            myObstacle14.update();
+            myObstacle15.update();
+            myObstacle16.update();
+            myObstacle17.update();
+            myObstacle18.update();
+            myObstacle19.update();
+            myObstacle20.update();
+            myObstacle21.update();
+            myObstacle22.update();
+            myObstacle23.update();
+            myObstacle24.update();
+            myObstacle25.update();
+            myObstacle26.update();
+            myObstacle27.update();
+            myObstacle28.update();
+            myObstacle29.update();
+            myObstacle30.update();
+            myObstaclew.update();
+            myBackground.update();
+        }
+    }
+    </script>
+    <p>You Have <span id="spcount"></span> Spirit Points</p>
+</div>
+</div>
+
+
+</body>
+</html>
